@@ -12,7 +12,7 @@ source "${DIR}/lib/000_helpers.sh" &> /dev/null
 : ${DATADIR="${DIR}/data"}
 
 : ${WALLET_CONF="${DATADIR}/wallet.conf"}
-: ${MONEROD_CONF="${DATADIR}/monero.conf"}
+: ${MONEROD_CONF="${DATADIR}/monerod.conf"}
 : ${EXAMPLE_WALLET_CONF="${WALLET_CONF}.example"}
 : ${EXAMPLE_MONEROD_CONF="${MONEROD_CONF}.example"}
 
