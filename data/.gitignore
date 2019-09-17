@@ -1,0 +1,5 @@
+*
+!.gitignore
+!monerod.conf.example
+!wallet.conf.example
+!logs/
