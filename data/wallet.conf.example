@@ -1,0 +1,9 @@
+wallet-dir=/monero/wallets
+
+log-file=/monero/logs/wallet.log
+log-level=1
+
+rpc-bind-ip=0.0.0.0
+rpc-bind-port=18100
+daemon-address=monerod:18081
+
