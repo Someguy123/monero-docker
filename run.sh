@@ -9,6 +9,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 source "${DIR}/lib/000_helpers.sh" &> /dev/null
 
+[[ -f "${DIR}/.env" ]] && source  "${DIR}/.env"
+
 : ${DATADIR="${DIR}/data"}
 
 : ${WALLET_CONF="${DATADIR}/wallet.conf"}
