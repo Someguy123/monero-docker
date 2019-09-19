@@ -22,7 +22,7 @@ services:
         volumes:
             - "$PWD/data:/monero"
         command: |
-            monero-wallet-rpc --config-file /monero/wallet.conf --password "${WALLET_PASS}" --daemon-login "${RPC_LOGIN}" --rpc-login "${RPC_LOGIN}" --confirm-external-bind
+            monero-wallet-rpc --config-file /monero/wallet.conf --daemon-login "${RPC_LOGIN}" --rpc-login "${RPC_LOGIN}" --confirm-external-bind
         ports:
             - "127.0.0.1:18100:18100"
 
