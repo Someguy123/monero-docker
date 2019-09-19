@@ -20,6 +20,7 @@ source "${DIR}/lib/000_helpers.sh" &> /dev/null
 
 : ${WALLET_CTR='monero_wallet'}
 : ${WALLET_HOST='http://127.0.0.1:18100/json_rpc'}
+: ${WALLET_NAME='mnrwallet'}
 : ${RPC_CTR='monerod'}
 : ${RPC_LOGIN='example:example'}
 
@@ -120,7 +121,7 @@ setup() {
         done
         msgts green "Container '$WALLET_CTR' appears to be up. Waiting 10 more seconds to ensure it's ready for requests"
         sleep 10
-        msgts green "Attempting to create wallet 'mnrwallet' with password specified earlier."
+        msgts green "Attempting to create wallet '${WALLET_NAME}' with password specified earlier."
         create_wallet "$walpass"
         msg
         msg "========================================="
@@ -149,7 +150,7 @@ container_running() {
 }
 
 create_wallet() {
-    local walname="mnrwallet" walpass=""
+    local walname="${WALLET_NAME}" walpass=""
 
     if (($#<1)); then
         msg red "Error: create_wallet needs at least one argument"
@@ -166,6 +167,32 @@ create_wallet() {
         '{"jsonrpc":"2.0","id":"0","method":"create_wallet","params": {"filename":"'$walname'","password":"'$walpass'","language":"English"}}' \
         -H 'Content-Type: application/json'
 }
+
+create_account() {
+
+    if (($#<1)); then
+        msg red "Error: create_account needs a label for the account"
+        msg yellow "Usage: create_account [label]"
+        return 1
+    fi
+
+    local label="$1"
+
+    msg green " -> Opening wallet ${WALLET_NAME} via wallet RPC '$WALLET_HOST' using login details '${RPC_LOGIN}' "
+    curl -u "$RPC_LOGIN" --digest -X POST "$WALLET_HOST" -d \
+        '{"jsonrpc":"2.0","id":"0","method":"open_wallet","params": {"filename":"'${WALLET_NAME}'","password":"'${WALLET_PASS}'","language":"English"}}' \
+        -H 'Content-Type: application/json'
+
+    msg green " -> Creating account with label ${label}"
+
+    curl -u "$RPC_LOGIN" --digest -X POST "$WALLET_HOST" -d \
+        '{"jsonrpc":"2.0","id":"0","method":"create_account","params": {"label":"'${label}'"}}' \
+        -H 'Content-Type: application/json'
+    msg
+    msg green " (+) Done\n"
+
+}
+
 
 _help() {
     msg green "Monero in a Box"
@@ -204,6 +231,9 @@ case $1 in
         ;;
     create_wallet)
         create_wallet "${@:2}"
+        ;;
+    create_account)
+        create_account "${@:2}"
         ;;
     help)
         _help
