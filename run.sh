@@ -173,6 +173,7 @@ _help() {
     msg
     msg green "Commands:"
     msg yellow "\t - setup - Install docker if needed, guided .env creation, start monero, and initial wallet creation"
+    msg yellow "\t - create_wallet [password] [name] - Create a monero wallet with the given password and file name "
     msg yellow "\t - start - Start monero and wallet RPC - alias for 'docker-compose up -d'"
     msg yellow "\t - stop - Stop monero and wallet RPC - alias for 'docker-compose down'"
     msg yellow "\t - restart - Restart monero and wallet RPC - alias for 'docker-compose restart'"
@@ -198,6 +199,9 @@ case $1 in
         ;;
     install_docker)
         install_docker && install_dkcompose
+        ;;
+    create_wallet)
+        create_wallet "${@:2}"
         ;;
     help)
         _help
