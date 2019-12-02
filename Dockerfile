@@ -14,7 +14,7 @@ ENV MONERO_INSTALLDIR ${MONERO_INSTALLDIR}
 
 RUN cd /tmp && wget https://dlsrc.getmonero.org/cli/monero-linux-x64-${MONERO_VERSION}.tar.bz2 && \
     tar xvf monero-linux-x64-${MONERO_VERSION}.tar.bz2 && \
-    cp -v /tmp/monero-x86_64-linux-gnu/* ${MONERO_INSTALLDIR} && \
+    cp -v /tmp/monero-x86_64-linux-*/* ${MONERO_INSTALLDIR} && \
     rm -rf /tmp/monero-*
 
 WORKDIR /monero
