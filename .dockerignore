@@ -1,2 +1,4 @@
 data/
+wallet_backups/
+.env
 

@@ -1,4 +1,4 @@
-FROM ubuntu:bionic
+FROM ubuntu:focal
 
 RUN apt-get update -qy && \
     apt-get install -qy wget curl && \
@@ -6,13 +6,13 @@ RUN apt-get update -qy && \
 
 VOLUME /monero
 
-ARG MONERO_VERSION=v0.15.0.1
+ARG MONERO_VERSION=v0.16.0.3
 ENV MONERO_VERSION ${MONERO_VERSION}
 
 ARG MONERO_INSTALLDIR=/usr/bin/
 ENV MONERO_INSTALLDIR ${MONERO_INSTALLDIR}
 
-RUN cd /tmp && wget https://dlsrc.getmonero.org/cli/monero-linux-x64-${MONERO_VERSION}.tar.bz2 && \
+RUN cd /tmp && wget https://downloads.getmonero.org/cli/monero-linux-x64-${MONERO_VERSION}.tar.bz2 && \
     tar xvf monero-linux-x64-${MONERO_VERSION}.tar.bz2 && \
     cp -v /tmp/monero-x86_64-linux-*/* ${MONERO_INSTALLDIR} && \
     rm -rf /tmp/monero-*
