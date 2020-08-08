@@ -295,7 +295,7 @@ mnr-status() {
 
 _LN="\n==============================================================================\n"
 
-: ${MONITOR_INTERVAL=5}
+: ${MONITOR_INTERVAL=10}
 
 MONITOR_INTERVAL=$((MONITOR_INTERVAL))
 
