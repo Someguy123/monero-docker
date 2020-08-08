@@ -10,23 +10,24 @@ services:
         command: |
             monerod --config-file /monero/monerod.conf --non-interactive --confirm-external-bind --rpc-login "${RPC_LOGIN}"
         volumes:
-            - "$PWD/data:/monero"
+            - "$DATADIR:/monero"
         ports:
-            - "0.0.0.0:18080:18080"
-            - "127.0.0.1:18081:18081"
+            - "${BIND_P2P_PORT}"
+            - "${BIND_RPC_PORT}"
     monerowallet:
         env_file: .env
         container_name: monero_wallet
         restart: always
         image: monero
         volumes:
-            - "$PWD/data:/monero"
+            - "$DATADIR:/monero"
         command: |
             monero-wallet-rpc --config-file /monero/wallet.conf --daemon-login "${RPC_LOGIN}" --rpc-login "${RPC_LOGIN}" --confirm-external-bind
         ports:
-            - "127.0.0.1:18100:18100"
+            - "${BIND_WALLET_PORT}"
 
 
 networks:
     default:
         driver: 'bridge'
+

@@ -9,7 +9,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 source "${DIR}/lib/000_helpers.sh" &> /dev/null
 
-[[ -f "${DIR}/.env" ]] && source  "${DIR}/.env"
+[[ -f "${DIR}/.env" ]] && source "${DIR}/.env"
+
+if [[ ! -f "${DIR}/.env" ]]; then
+    >&2 msg yellow "\n [!!!] Warning: ${DIR}/.env not found. Copying ${DIR}/env.example to ${DIR}/.env ...\n"
+    >&2 cp -v "${DIR}/env.example" "${DIR}/.env"
+fi
 
 : ${DATADIR="${DIR}/data"}
 
