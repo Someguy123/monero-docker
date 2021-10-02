@@ -19,7 +19,8 @@ fi
 
 : ${VERBOSE=0}
 : ${DATADIR="${DIR}/data"}
-
+: ${DK_IMG="someguy123/monero"}
+: ${DK_NAME="monero"}
 : ${WALLET_CONF="${DATADIR}/wallet.conf"}
 : ${MONEROD_CONF="${DATADIR}/monerod.conf"}
 : ${EXAMPLE_WALLET_CONF="${WALLET_CONF}.example"}
@@ -33,6 +34,8 @@ fi
 : ${RPC_HOST='http://127.0.0.1:18081/json_rpc'}
 
 : ${REMOTE_RPC="http://node.moneroworld.com:18089/json_rpc"}
+#: ${MONERO_VERSION="v0.17.2.3"}
+: ${MONERO_VERSION="latest"}
 
 if [[ ! -f "$MONEROD_CONF" ]]; then
     if [[ -f "$EXAMPLE_MONEROD_CONF" ]]; then
@@ -80,6 +83,32 @@ install_dkcompose() {
         sudo chmod +x /usr/local/bin/docker-compose
     fi
 }
+
+build() {
+    local mver="$MONERO_VERSION"
+    (( $# > 1 )) && mver="$1" && shift
+    DK_ARGS=("--build-arg" "MONERO_VERSION=${mver}")
+    (( $# > 0 )) && DK_ARGS+=("$@")
+    DK_ARGS+=("-t" "$DK_NAME" ".")
+    msg bold yellow "\n > Building Monero version '${mver}' as docker image '${DK_NAME}'"
+    msg bold yellow " > Build arguments: ${DK_ARGS[*]} \n"
+
+    docker build "${DK_ARGS[@]}"
+    _ret=$?
+    msg bold green "\n +++ Finished +++ \n"
+    exit $_ret
+}
+
+dkinstall() {
+    local mver="$MONERO_VERSION"
+    (( $# > 1 )) && mver="$1" && shift
+    msg bold yellow "\n >>> Downloading docker image: ${DK_IMG}:${mver} \n"
+    docker pull "${DK_IMG}:${mver}"
+    msg bold yellow "\n >>> Tagging docker image '${DK_IMG}:${mver}' as '${DK_NAME}' \n"
+    docker tag "${DK_IMG}:${mver}" "$DK_NAME"
+    msg bold green "\n +++ Finished +++ \n"
+}
+
 
 setup() {
     install_docker && install_dkcompose
@@ -420,6 +449,8 @@ _help() {
     msg yellow "\t - create_wallet [password] [name] - Create a monero wallet with the given password and file name "
     msg yellow "\t - start - Start monero and wallet RPC - alias for 'docker-compose up -d'"
     msg yellow "\t - stop - Stop monero and wallet RPC - alias for 'docker-compose down'"
+    msg yellow "\t - build (ver=${MONERO_VERSION}) (docker_build_args) - Build the monero docker image. Can specify a version if you want to build a specific version image of Monero (e.g. 'v0.17.2.3'), as well as extra build args e.g. '--build-arg MONERO_CONFIG_FILE=/monero/custom.conf'"
+    msg yellow "\t - install (ver=${MONERO_VERSION}) - Install a binary Monero image from docker hub (default image: someguy123/monero)"
     msg yellow "\t - monitor - Monitor your Monero RPC daemon's sync progress, compares against a remote RPC ( $REMOTE_RPC ) to give you an ETA until fully synced"
     msg yellow "\t - status - Show the current block number + version of your Monero daemon, plus the current block / version of REMOTE_RPC ( $REMOTE_RPC )"
     msg yellow "\t - query (-v) (host=${RPC_HOST}) [method] (params=[]) - Call a JSON RPC method against either your local Monero RPC daemon / wallet, or a remote daemon / wallet"
@@ -443,6 +474,14 @@ case $1 in
         ;;
     restart)
         docker-compose restart
+        ;;
+    build)
+        build "${@:2}"
+        exit $?
+        ;;
+    install|download)
+        dkinstall "${@:2}"
+        exit $?
         ;;
     install_docker)
         install_docker && install_dkcompose
