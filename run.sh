@@ -7,6 +7,9 @@
 # directory where the script is located, so we can source files regardless of where PWD is
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:${PATH}"
+export PATH="${HOME}/.local/bin:/snap/bin:${PATH}"
+
 source "${DIR}/lib/000_helpers.sh" &> /dev/null
 source "${DIR}/lib/010_helpers.sh" &> /dev/null
 
